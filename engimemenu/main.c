@@ -1,11 +1,12 @@
 /*  main.c – Enigme‑Menu standalone entry point */
 
-#include "engimemenu.h"
 #include <stdio.h>
 
-int main(int argc, char *argv[])
-{
-    (void)argc; (void)argv;
+#include "engimemenu.h"
+
+int main(int argc, char* argv[]) {
+    (void)argc;
+    (void)argv;
 
     EnigmeMenu menu;
     if (!EnigmeMenu_Init(&menu)) {
@@ -18,8 +19,7 @@ int main(int argc, char *argv[])
 
     if (action == 1) {
         int correct = (menu.selectedAnswer == menu.correctIndex);
-        printf("Answer selected: %d (%s) – %s\n",
-               menu.selectedAnswer,
+        printf("Answer selected: %d (%s) – %s\n", menu.selectedAnswer,
                menu.answers[menu.selectedAnswer],
                correct ? "CORRECT!" : "WRONG");
     } else {

@@ -4,43 +4,40 @@
  */
 
 #include "scoremenu.h"
+
 #include <stdio.h>
 #include <string.h>
 
 /* ── Helpers ──────────────────────────────────────────────── */
 
-static int PointInRect(int x, int y, const SDL_Rect *r)
-{
-    return (x >= r->x && x < r->x + r->w &&
-            y >= r->y && y < r->y + r->h);
+static int PointInRect(int x, int y, const SDL_Rect* r) {
+    return (x >= r->x && x < r->x + r->w && y >= r->y && y < r->y + r->h);
 }
 
-static Button MakeBtn(SDL_Renderer *r, int x, int y, int w, int h,
-                      const char *n, const char *hv)
-{
+static Button MakeBtn(SDL_Renderer* r, int x, int y, int w, int h,
+                      const char* n, const char* hv) {
     Button b;
     memset(&b, 0, sizeof(b));
     b.rect = (SDL_Rect){x, y, w, h};
     b.tex_normal = IMG_LoadTexture(r, n);
-    b.tex_hover  = IMG_LoadTexture(r, hv);
+    b.tex_hover = IMG_LoadTexture(r, hv);
     return b;
 }
 
-static void UpdateHover(Button *b, int mx, int my, Mix_Chunk *snd)
-{
+static void UpdateHover(Button* b, int mx, int my, Mix_Chunk* snd) {
     b->hovered = PointInRect(mx, my, &b->rect);
     if (b->hovered && !b->was_hovered && snd) Mix_PlayChannel(-1, snd, 0);
     b->was_hovered = b->hovered;
 }
 
-static void DrawButton(SDL_Renderer *r, Button *b)
-{
-    SDL_Texture *tex = b->hovered ? b->tex_hover : b->tex_normal;
-    if (tex) SDL_RenderCopy(r, tex, NULL, &b->rect);
+static void DrawButton(SDL_Renderer* r, Button* b) {
+    SDL_Texture* tex = b->hovered ? b->tex_hover : b->tex_normal;
+    if (tex)
+        SDL_RenderCopy(r, tex, NULL, &b->rect);
     else {
         SDL_SetRenderDrawColor(r, b->hovered ? 200 : 100,
-                                  b->hovered ? 200 : 100,
-                                  b->hovered ? 200 : 100, 255);
+                               b->hovered ? 200 : 100, b->hovered ? 200 : 100,
+                               255);
         SDL_RenderFillRect(r, &b->rect);
         SDL_SetRenderDrawColor(r, 255, 255, 255, 255);
         SDL_RenderDrawRect(r, &b->rect);
@@ -49,8 +46,7 @@ static void DrawButton(SDL_Renderer *r, Button *b)
 
 /* ── Init ────────────────────────────────────────────────── */
 
-int ScoreMenu_Init(ScoreMenu *menu)
-{
+int ScoreMenu_Init(ScoreMenu* menu) {
     memset(menu, 0, sizeof(*menu));
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) return 0;
@@ -58,31 +54,35 @@ int ScoreMenu_Init(ScoreMenu *menu)
     TTF_Init();
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) return 0;
 
-    menu->window = SDL_CreateWindow("Sous Menu Meilleurs Scores",
-        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    menu->window = SDL_CreateWindow(
+        "Sous Menu Meilleurs Scores", SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     if (!menu->window) return 0;
 
-    menu->renderer = SDL_CreateRenderer(menu->window, -1,
-        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    menu->renderer = SDL_CreateRenderer(
+        menu->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!menu->renderer) return 0;
 
-    menu->font      = TTF_OpenFont("assets/font.ttf", 32);
+    menu->font = TTF_OpenFont("assets/font.ttf", 32);
     menu->titleFont = TTF_OpenFont("assets/font.ttf", 56);
 
-    menu->background = IMG_LoadTexture(menu->renderer, "assets/background3.png");
+    menu->background =
+        IMG_LoadTexture(menu->renderer, "assets/background3.png");
 
     int cx = SCREEN_WIDTH / 2;
 
     /* View 1 – input */
-    menu->btnValider = MakeBtn(menu->renderer, cx - 100, 600, 200, 80,
-                               "assets/btn_valider.png", "assets/btn_valider_h.png");
+    menu->btnValider =
+        MakeBtn(menu->renderer, cx - 100, 600, 200, 80,
+                "assets/btn_valider.png", "assets/btn_valider_h.png");
 
     /* View 2 – scores */
-    menu->btnQuitter = MakeBtn(menu->renderer, cx - 300, SCREEN_HEIGHT - 150, 200, 80,
-                               "assets/btn_quitter.png", "assets/btn_quitter_h.png");
-    menu->btnRetour  = MakeBtn(menu->renderer, cx + 100, SCREEN_HEIGHT - 150, 200, 80,
-                               "assets/btn_retour.png",  "assets/btn_retour_h.png");
+    menu->btnQuitter =
+        MakeBtn(menu->renderer, cx - 300, SCREEN_HEIGHT - 150, 200, 80,
+                "assets/btn_quitter.png", "assets/btn_quitter_h.png");
+    menu->btnRetour =
+        MakeBtn(menu->renderer, cx + 100, SCREEN_HEIGHT - 150, 200, 80,
+                "assets/btn_retour.png", "assets/btn_retour_h.png");
 
     /* Star images */
     menu->starTextures[0] = IMG_LoadTexture(menu->renderer, "assets/star1.png");
@@ -90,27 +90,29 @@ int ScoreMenu_Init(ScoreMenu *menu)
     menu->starTextures[2] = IMG_LoadTexture(menu->renderer, "assets/star3.png");
 
     /* Dummy top scores */
-    strcpy(menu->topScores[0].name, "Player1"); menu->topScores[0].score = 5000;
-    strcpy(menu->topScores[1].name, "Player2"); menu->topScores[1].score = 3000;
-    strcpy(menu->topScores[2].name, "Player3"); menu->topScores[2].score = 1000;
+    strcpy(menu->topScores[0].name, "Player1");
+    menu->topScores[0].score = 5000;
+    strcpy(menu->topScores[1].name, "Player2");
+    menu->topScores[1].score = 3000;
+    strcpy(menu->topScores[2].name, "Player3");
+    menu->topScores[2].score = 1000;
 
-    menu->bgMusic    = Mix_LoadMUS("assets/victory.mp3");
+    menu->bgMusic = Mix_LoadMUS("assets/victory.mp3");
     menu->hoverSound = Mix_LoadWAV("assets/hover.wav");
 
     SDL_StartTextInput();
 
-    menu->inputLen     = 0;
+    menu->inputLen = 0;
     menu->inputText[0] = '\0';
-    menu->view    = SCORE_VIEW_INPUT;
+    menu->view = SCORE_VIEW_INPUT;
     menu->running = 1;
-    menu->action  = 0;
+    menu->action = 0;
     return 1;
 }
 
 /* ── Events ──────────────────────────────────────────────── */
 
-void ScoreMenu_HandleEvents(ScoreMenu *menu)
-{
+void ScoreMenu_HandleEvents(ScoreMenu* menu) {
     int mx, my;
     SDL_GetMouseState(&mx, &my);
 
@@ -118,12 +120,15 @@ void ScoreMenu_HandleEvents(ScoreMenu *menu)
         UpdateHover(&menu->btnValider, mx, my, menu->hoverSound);
     } else {
         UpdateHover(&menu->btnQuitter, mx, my, menu->hoverSound);
-        UpdateHover(&menu->btnRetour,  mx, my, menu->hoverSound);
+        UpdateHover(&menu->btnRetour, mx, my, menu->hoverSound);
     }
 
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
-        if (e.type == SDL_QUIT) { menu->running = 0; return; }
+        if (e.type == SDL_QUIT) {
+            menu->running = 0;
+            return;
+        }
 
         /* Text input for name */
         if (menu->view == SCORE_VIEW_INPUT && e.type == SDL_TEXTINPUT) {
@@ -144,15 +149,18 @@ void ScoreMenu_HandleEvents(ScoreMenu *menu)
                 }
             } else {
                 if (e.key.keysym.sym == SDLK_ESCAPE) {
-                    menu->action = 2; menu->running = 0;
+                    menu->action = 2;
+                    menu->running = 0;
                 }
                 if (e.key.keysym.sym == SDLK_e) {
-                    menu->action = 3; menu->running = 0;
+                    menu->action = 3;
+                    menu->running = 0;
                 }
             }
         }
 
-        if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
+        if (e.type == SDL_MOUSEBUTTONDOWN &&
+            e.button.button == SDL_BUTTON_LEFT) {
             int cx = e.button.x, cy = e.button.y;
             if (menu->view == SCORE_VIEW_INPUT) {
                 if (PointInRect(cx, cy, &menu->btnValider.rect)) {
@@ -161,10 +169,12 @@ void ScoreMenu_HandleEvents(ScoreMenu *menu)
                 }
             } else {
                 if (PointInRect(cx, cy, &menu->btnQuitter.rect)) {
-                    menu->action = 2; menu->running = 0;
+                    menu->action = 2;
+                    menu->running = 0;
                 }
                 if (PointInRect(cx, cy, &menu->btnRetour.rect)) {
-                    menu->action = 1; menu->running = 0;
+                    menu->action = 1;
+                    menu->running = 0;
                 }
             }
         }
@@ -173,19 +183,20 @@ void ScoreMenu_HandleEvents(ScoreMenu *menu)
 
 /* ── Render ──────────────────────────────────────────────── */
 
-void ScoreMenu_Render(ScoreMenu *menu)
-{
+void ScoreMenu_Render(ScoreMenu* menu) {
     SDL_RenderClear(menu->renderer);
-    if (menu->background) SDL_RenderCopy(menu->renderer, menu->background, NULL, NULL);
+    if (menu->background)
+        SDL_RenderCopy(menu->renderer, menu->background, NULL, NULL);
 
     if (menu->view == SCORE_VIEW_INPUT) {
         /* Title label */
         if (menu->titleFont) {
             SDL_Color w = {255, 255, 255, 255};
-            SDL_Surface *surf = TTF_RenderUTF8_Blended(menu->titleFont,
-                "Saisir Nom / Pseudo nom :", w);
+            SDL_Surface* surf = TTF_RenderUTF8_Blended(
+                menu->titleFont, "Saisir Nom / Pseudo nom :", w);
             if (surf) {
-                SDL_Texture *t = SDL_CreateTextureFromSurface(menu->renderer, surf);
+                SDL_Texture* t =
+                    SDL_CreateTextureFromSurface(menu->renderer, surf);
                 int tw = surf->w, th = surf->h;
                 SDL_Rect r = {(SCREEN_WIDTH - tw) / 2, 280, tw, th};
                 SDL_RenderCopy(menu->renderer, t, NULL, &r);
@@ -205,9 +216,11 @@ void ScoreMenu_Render(ScoreMenu *menu)
         /* Input text */
         if (menu->font && menu->inputLen > 0) {
             SDL_Color blk = {0, 0, 0, 255};
-            SDL_Surface *surf = TTF_RenderUTF8_Blended(menu->font, menu->inputText, blk);
+            SDL_Surface* surf =
+                TTF_RenderUTF8_Blended(menu->font, menu->inputText, blk);
             if (surf) {
-                SDL_Texture *it = SDL_CreateTextureFromSurface(menu->renderer, surf);
+                SDL_Texture* it =
+                    SDL_CreateTextureFromSurface(menu->renderer, surf);
                 int tw = surf->w, th = surf->h;
                 SDL_Rect r = {bx + 10, by + (70 - th) / 2, tw, th};
                 SDL_RenderCopy(menu->renderer, it, NULL, &r);
@@ -234,9 +247,11 @@ void ScoreMenu_Render(ScoreMenu *menu)
         /* Scores view */
         if (menu->titleFont) {
             SDL_Color w = {255, 255, 255, 255};
-            SDL_Surface *surf = TTF_RenderUTF8_Blended(menu->titleFont, "Meilleurs Scores", w);
+            SDL_Surface* surf =
+                TTF_RenderUTF8_Blended(menu->titleFont, "Meilleurs Scores", w);
             if (surf) {
-                SDL_Texture *t = SDL_CreateTextureFromSurface(menu->renderer, surf);
+                SDL_Texture* t =
+                    SDL_CreateTextureFromSurface(menu->renderer, surf);
                 int tw = surf->w, th = surf->h;
                 SDL_Rect r = {(SCREEN_WIDTH - tw) / 2, 100, tw, th};
                 SDL_RenderCopy(menu->renderer, t, NULL, &r);
@@ -250,7 +265,8 @@ void ScoreMenu_Render(ScoreMenu *menu)
         for (int i = 0; i < TOP_SCORES; i++) {
             if (menu->starTextures[i]) {
                 SDL_Rect sr = {SCREEN_WIDTH / 2 - 300, sy, 128, 128};
-                SDL_RenderCopy(menu->renderer, menu->starTextures[i], NULL, &sr);
+                SDL_RenderCopy(menu->renderer, menu->starTextures[i], NULL,
+                               &sr);
             }
 
             if (menu->font) {
@@ -258,9 +274,10 @@ void ScoreMenu_Render(ScoreMenu *menu)
                 snprintf(buf, sizeof(buf), "%s  -  %d pts",
                          menu->topScores[i].name, menu->topScores[i].score);
                 SDL_Color w = {255, 255, 255, 255};
-                SDL_Surface *surf = TTF_RenderUTF8_Blended(menu->font, buf, w);
+                SDL_Surface* surf = TTF_RenderUTF8_Blended(menu->font, buf, w);
                 if (surf) {
-                    SDL_Texture *st = SDL_CreateTextureFromSurface(menu->renderer, surf);
+                    SDL_Texture* st =
+                        SDL_CreateTextureFromSurface(menu->renderer, surf);
                     int tw = surf->w, th = surf->h;
                     SDL_Rect r = {SCREEN_WIDTH / 2 - 140, sy + 40, tw, th};
                     SDL_RenderCopy(menu->renderer, st, NULL, &r);
@@ -280,23 +297,22 @@ void ScoreMenu_Render(ScoreMenu *menu)
 
 /* ── Cleanup ─────────────────────────────────────────────── */
 
-void ScoreMenu_Cleanup(ScoreMenu *menu)
-{
+void ScoreMenu_Cleanup(ScoreMenu* menu) {
     SDL_StopTextInput();
-    Button *all[] = {&menu->btnValider, &menu->btnQuitter, &menu->btnRetour};
+    Button* all[] = {&menu->btnValider, &menu->btnQuitter, &menu->btnRetour};
     for (int i = 0; i < 3; i++) {
         if (all[i]->tex_normal) SDL_DestroyTexture(all[i]->tex_normal);
-        if (all[i]->tex_hover)  SDL_DestroyTexture(all[i]->tex_hover);
+        if (all[i]->tex_hover) SDL_DestroyTexture(all[i]->tex_hover);
     }
     for (int i = 0; i < TOP_SCORES; i++)
         if (menu->starTextures[i]) SDL_DestroyTexture(menu->starTextures[i]);
-    if (menu->background)  SDL_DestroyTexture(menu->background);
-    if (menu->bgMusic)     Mix_FreeMusic(menu->bgMusic);
-    if (menu->hoverSound)  Mix_FreeChunk(menu->hoverSound);
-    if (menu->font)        TTF_CloseFont(menu->font);
-    if (menu->titleFont)   TTF_CloseFont(menu->titleFont);
-    if (menu->renderer)    SDL_DestroyRenderer(menu->renderer);
-    if (menu->window)      SDL_DestroyWindow(menu->window);
+    if (menu->background) SDL_DestroyTexture(menu->background);
+    if (menu->bgMusic) Mix_FreeMusic(menu->bgMusic);
+    if (menu->hoverSound) Mix_FreeChunk(menu->hoverSound);
+    if (menu->font) TTF_CloseFont(menu->font);
+    if (menu->titleFont) TTF_CloseFont(menu->titleFont);
+    if (menu->renderer) SDL_DestroyRenderer(menu->renderer);
+    if (menu->window) SDL_DestroyWindow(menu->window);
     Mix_CloseAudio();
     TTF_Quit();
     IMG_Quit();
@@ -305,8 +321,7 @@ void ScoreMenu_Cleanup(ScoreMenu *menu)
 
 /* ── Boucle principale ──────────────────────────────────── */
 
-int ScoreMenu_Run(ScoreMenu *menu)
-{
+int ScoreMenu_Run(ScoreMenu* menu) {
     while (menu->running) {
         ScoreMenu_HandleEvents(menu);
         ScoreMenu_Render(menu);
