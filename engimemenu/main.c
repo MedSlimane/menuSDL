@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     int action = EnigmeMenu_Run(&menu);
 
     if (action == 1) {
-        bool correct = (menu.selectedAnswer == menu.correctIndex);
+        int correct = (menu.selectedAnswer == menu.correctIndex);
         printf("Answer selected: %d (%s) – %s\n",
                menu.selectedAnswer,
                menu.answers[menu.selectedAnswer],

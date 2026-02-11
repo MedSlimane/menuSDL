@@ -5,24 +5,21 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
-#include <stdbool.h>
 
 #define SCREEN_WIDTH  1920
 #define SCREEN_HEIGHT 1080
-
-/* ── Structures ─────────────────────────────────────────────── */
 
 typedef struct {
     SDL_Rect     rect;
     SDL_Texture *tex_normal;
     SDL_Texture *tex_hover;
-    bool         hovered;
-    bool         was_hovered;
+    int          hovered;
+    int          was_hovered;
 } Button;
 
 typedef enum {
-    ENIGME_VIEW_CHOICE,   /* Quiz / Puzzle buttons                   */
-    ENIGME_VIEW_QUIZ      /* Question + A / B / C answer buttons     */
+    ENIGME_VIEW_CHOICE,   /* Quiz / Puzzle buttons               */
+    ENIGME_VIEW_QUIZ      /* Question + A / B / C answer buttons */
 } EnigmeView;
 
 typedef struct {
@@ -30,13 +27,13 @@ typedef struct {
     SDL_Renderer *renderer;
     TTF_Font     *font;
     TTF_Font     *titleFont;
-    SDL_Texture  *background;     /* arrière-plan 4 */
+    SDL_Texture  *background;
 
-    /* View 1 – choice */
+    /* View 1 */
     Button btnQuiz;
     Button btnPuzzle;
 
-    /* View 2 – quiz */
+    /* View 2 */
     Button btnA;
     Button btnB;
     Button btnC;
@@ -47,25 +44,18 @@ typedef struct {
     int         correctIndex;     /* 0 / 1 / 2 */
     int         selectedAnswer;   /* -1 = none  */
 
-    Mix_Music *quizMusic;         /* suspense / drum roll */
+    Mix_Music *quizMusic;
     Mix_Chunk *hoverSound;
 
     EnigmeView view;
-    bool       running;
+    int        running;
     int        action;   /* 0=none 1=answered 2=quit */
 } EnigmeMenu;
 
-/* ── Function declarations ──────────────────────────────────── */
+int  EnigmeMenu_Init(EnigmeMenu *menu);
+void EnigmeMenu_HandleEvents(EnigmeMenu *menu);
+void EnigmeMenu_Render(EnigmeMenu *menu);
+void EnigmeMenu_Cleanup(EnigmeMenu *menu);
+int  EnigmeMenu_Run(EnigmeMenu *menu);
 
-bool         EnigmeMenu_Init(EnigmeMenu *menu);
-void         EnigmeMenu_HandleEvents(EnigmeMenu *menu);
-void         EnigmeMenu_Render(EnigmeMenu *menu);
-void         EnigmeMenu_Cleanup(EnigmeMenu *menu);
-int          EnigmeMenu_Run(EnigmeMenu *menu);
-
-SDL_Texture *EM_LoadTexture(SDL_Renderer *r, const char *path);
-SDL_Texture *EM_RenderText(SDL_Renderer *r, TTF_Font *f,
-                           const char *text, SDL_Color c);
-bool         EM_PointInRect(int x, int y, const SDL_Rect *r);
-
-#endif /* ENGIMEMENU_H */
+#endif
