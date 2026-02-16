@@ -15,7 +15,13 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    int action = EnigmeMenu_Run(&menu);
+    int action;
+    while (menu.running) {
+        EnigmeMenu_HandleEvents(&menu);
+        EnigmeMenu_Render(&menu);
+        SDL_Delay(16);
+    }
+    action = menu.action;
 
     if (action == 1) {
         int correct = (menu.selectedAnswer == menu.correctIndex);

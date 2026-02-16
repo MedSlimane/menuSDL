@@ -40,6 +40,5 @@ int OptionMenu_Init(OptionMenu* menu);
 void OptionMenu_HandleEvents(OptionMenu* menu);
 void OptionMenu_Render(OptionMenu* menu);
 void OptionMenu_Cleanup(OptionMenu* menu);
-int OptionMenu_Run(OptionMenu* menu);
 
 #endif

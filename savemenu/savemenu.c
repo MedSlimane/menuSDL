@@ -206,14 +206,3 @@ void SaveMenu_Cleanup(SaveMenu* menu) {
     IMG_Quit();
     SDL_Quit();
 }
-
-/* ── Boucle principale ──────────────────────────────────── */
-
-int SaveMenu_Run(SaveMenu* menu) {
-    while (menu->running) {
-        SaveMenu_HandleEvents(menu);
-        SaveMenu_Render(menu);
-        SDL_Delay(16);
-    }
-    return menu->action;
-}

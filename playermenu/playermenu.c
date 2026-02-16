@@ -278,14 +278,3 @@ void PlayerMenu_Cleanup(PlayerMenu* menu) {
     IMG_Quit();
     SDL_Quit();
 }
-
-/* ── Boucle principale ──────────────────────────────────── */
-
-int PlayerMenu_Run(PlayerMenu* menu) {
-    while (menu->running) {
-        PlayerMenu_HandleEvents(menu);
-        PlayerMenu_Render(menu);
-        SDL_Delay(16);
-    }
-    return menu->action;
-}

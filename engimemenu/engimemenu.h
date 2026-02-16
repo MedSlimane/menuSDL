@@ -56,6 +56,5 @@ int EnigmeMenu_Init(EnigmeMenu* menu);
 void EnigmeMenu_HandleEvents(EnigmeMenu* menu);
 void EnigmeMenu_Render(EnigmeMenu* menu);
 void EnigmeMenu_Cleanup(EnigmeMenu* menu);
-int EnigmeMenu_Run(EnigmeMenu* menu);
 
 #endif

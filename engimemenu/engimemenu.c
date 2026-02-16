@@ -265,14 +265,3 @@ void EnigmeMenu_Cleanup(EnigmeMenu* menu) {
     IMG_Quit();
     SDL_Quit();
 }
-
-/* ── Boucle principale ──────────────────────────────────── */
-
-int EnigmeMenu_Run(EnigmeMenu* menu) {
-    while (menu->running) {
-        EnigmeMenu_HandleEvents(menu);
-        EnigmeMenu_Render(menu);
-        SDL_Delay(16);
-    }
-    return menu->action;
-}

@@ -58,6 +58,5 @@ int PlayerMenu_Init(PlayerMenu* menu);
 void PlayerMenu_HandleEvents(PlayerMenu* menu);
 void PlayerMenu_Render(PlayerMenu* menu);
 void PlayerMenu_Cleanup(PlayerMenu* menu);
-int PlayerMenu_Run(PlayerMenu* menu);
 
 #endif

@@ -43,6 +43,5 @@ int SaveMenu_Init(SaveMenu* menu);
 void SaveMenu_HandleEvents(SaveMenu* menu);
 void SaveMenu_Render(SaveMenu* menu);
 void SaveMenu_Cleanup(SaveMenu* menu);
-int SaveMenu_Run(SaveMenu* menu);
 
 #endif

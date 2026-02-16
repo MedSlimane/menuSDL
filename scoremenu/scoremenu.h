@@ -53,6 +53,5 @@ int ScoreMenu_Init(ScoreMenu* menu);
 void ScoreMenu_HandleEvents(ScoreMenu* menu);
 void ScoreMenu_Render(ScoreMenu* menu);
 void ScoreMenu_Cleanup(ScoreMenu* menu);
-int ScoreMenu_Run(ScoreMenu* menu);
 
 #endif

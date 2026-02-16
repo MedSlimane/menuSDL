@@ -246,14 +246,3 @@ void OptionMenu_Cleanup(OptionMenu* menu) {
     IMG_Quit();
     SDL_Quit();
 }
-
-/* ── Boucle principale ──────────────────────────────────── */
-
-int OptionMenu_Run(OptionMenu* menu) {
-    while (menu->running) {
-        OptionMenu_HandleEvents(menu);
-        OptionMenu_Render(menu);
-        SDL_Delay(16);
-    }
-    return menu->action;
-}

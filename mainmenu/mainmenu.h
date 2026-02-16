@@ -36,6 +36,5 @@ int MainMenu_Init(MainMenu* menu);
 void MainMenu_HandleEvents(MainMenu* menu);
 void MainMenu_Render(MainMenu* menu);
 void MainMenu_Cleanup(MainMenu* menu);
-int MainMenu_Run(MainMenu* menu);
 
 #endif

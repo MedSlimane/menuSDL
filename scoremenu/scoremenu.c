@@ -318,14 +318,3 @@ void ScoreMenu_Cleanup(ScoreMenu* menu) {
     IMG_Quit();
     SDL_Quit();
 }
-
-/* ── Boucle principale ──────────────────────────────────── */
-
-int ScoreMenu_Run(ScoreMenu* menu) {
-    while (menu->running) {
-        ScoreMenu_HandleEvents(menu);
-        ScoreMenu_Render(menu);
-        SDL_Delay(16);
-    }
-    return menu->action;
-}

@@ -1,11 +1,12 @@
 /*  main.c – Main‑Menu standalone entry point */
 
-#include "mainmenu.h"
 #include <stdio.h>
 
-int main(int argc, char *argv[])
-{
-    (void)argc; (void)argv;
+#include "mainmenu.h"
+
+int main(int argc, char* argv[]) {
+    (void)argc;
+    (void)argv;
 
     MainMenu menu;
     if (!MainMenu_Init(&menu)) {
@@ -14,11 +15,16 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    int action = MainMenu_Run(&menu);
+    int action;
+    while (menu.running) {
+        MainMenu_HandleEvents(&menu);
+        MainMenu_Render(&menu);
+        SDL_Delay(16);
+    }
+    action = menu.action;
 
-    const char *labels[] = {
-        "None", "Jouer", "Options", "Meilleurs Scores", "Histoire", "Quitter"
-    };
+    const char* labels[] = {"None",     "Jouer",  "Options", "Meilleurs Scores",
+                            "Histoire", "Quitter"};
     if (action >= 1 && action <= 5)
         printf("Action selected: %s (%d)\n", labels[action], action);
 
